@@ -1,7 +1,7 @@
 // importing data makes it easy to work with
 import data from "./data.json";
 
-type User = (typeof data)[number];
+export type User = (typeof data)[number];
 
 const ERROR_CHANCE = 0.1;
 const [DELAY_MIN, DELAY_MAX] = [50, 100];
