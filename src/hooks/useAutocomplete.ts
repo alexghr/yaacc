@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type Options<T> = {
+export type AutocompleteOptions<T> = {
   search: (value: string, signal: AbortSignal) => T[] | Promise<T[]>;
 };
 
-type Autocomplete<T> = {
+export type AutocompleteReturn<T> = {
   suggestions: T[];
   value: string;
   search: (value: string) => void;
@@ -12,7 +12,7 @@ type Autocomplete<T> = {
 
 export default function useAutocomplete<T>({
   search,
-}: Options<T>): Autocomplete<T> {
+}: AutocompleteOptions<T>): AutocompleteReturn<T> {
   const [value, setValue] = useState("");
   const [suggestions, setSuggestions] = useState<T[]>([]);
 
@@ -21,6 +21,10 @@ export default function useAutocomplete<T>({
   searchFnRef.current = search;
 
   useEffect(() => {
+    if (!value) {
+      return;
+    }
+
     const abortController = new AbortController();
 
     Promise.resolve(searchFnRef.current(value, abortController.signal))
@@ -31,7 +35,8 @@ export default function useAutocomplete<T>({
         if (err.name === "AbortError") {
           return;
         }
-        throw err;
+
+        setSuggestions([]);
       });
 
     return () => {
