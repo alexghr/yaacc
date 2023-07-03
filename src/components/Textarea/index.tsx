@@ -1,5 +1,5 @@
 import type { User } from "@/data/user";
-import useAutocomplete from "@/hooks/useAutocomplete";
+import useSearch from "@/hooks/useSearch";
 import { FC, useRef, useState } from "react";
 import Suggestion from "../Suggestion";
 import searchFn from "../../api/search";
@@ -10,7 +10,7 @@ type Props = {};
 const Textarea: FC<{}> = () => {
   const [value, setValue] = useState("");
   const isSearchingRef = useRef(false);
-  const { suggestions, search } = useAutocomplete<User>({
+  const { results, updateQuery } = useSearch<User>({
     search: searchFn,
   });
 
@@ -24,7 +24,7 @@ const Textarea: FC<{}> = () => {
     if (term || isSearchingRef.current) {
       isSearchingRef.current = true;
       const term = /@(\w+)$/.exec(value)?.[1] ?? "";
-      search(term);
+      updateQuery(term);
     } else if (value === " ") {
       isSearchingRef.current = false;
     }
@@ -38,9 +38,9 @@ const Textarea: FC<{}> = () => {
         value={value}
       />
       <ol ref={suggestionListRef} className={styles.suggestions}>
-        {suggestions.map((suggestion) => (
-          <li key={suggestion.username}>
-            <Suggestion {...suggestion} />
+        {results.map((user) => (
+          <li key={user.username}>
+            <Suggestion {...user} />
           </li>
         ))}
       </ol>
