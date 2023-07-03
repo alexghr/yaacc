@@ -31,7 +31,16 @@ const Textarea: FC<Props> = ({ search }) => {
       }
       updateQuery(term);
       setSuggestionsVisible(true);
+    } else {
+      setSuggestionsVisible(false);
+      termStartRef.current = -1;
     }
+  };
+
+  const handleCloseSuggestions = () => {
+    setSuggestionsVisible(false);
+    // I don't like this
+    termStartRef.current = -1;
   };
 
   const handleSelection = (user: User) => {
@@ -55,7 +64,7 @@ const Textarea: FC<Props> = ({ search }) => {
       <SuggestionList
         open={suggestionsVisible && results.length > 0}
         items={results}
-        onRequestClose={() => setSuggestionsVisible(false)}
+        onRequestClose={handleCloseSuggestions}
         onSelectItem={handleSelection}
       />
     </div>
