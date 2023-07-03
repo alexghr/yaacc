@@ -86,6 +86,8 @@ export default function SuggestionList({
           key={user.username}
           role="option"
           aria-selected={index === selectedIndex}
+          // afaik role=option should allow for interaction
+          onClick={() => onSelectItem?.(user)}
         >
           <Suggestion {...user} />
         </li>

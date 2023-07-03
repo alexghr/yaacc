@@ -3,6 +3,10 @@
   list-style: none;
 }
 
+.suggestions > li {
+  cursor: pointer;
+}
+
 .suggestions > li + li {
   margin-top: 1rem;
 }
