@@ -11,8 +11,20 @@ type Props = {
   onRequestClose?: () => void;
 };
 
-export default function SuggestionList({ items, onSelectItem }: Props) {
+export default function SuggestionList({
+  items,
+  open = true,
+  onSelectItem,
+  onRequestClose,
+}: Props) {
   const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  useEffect(() => {
+    if (!open) {
+      // clear selection on close
+      setSelectedIndex(-1);
+    }
+  }, [open]);
 
   useGlobalKeyDown(
     "ArrowDown",
@@ -54,8 +66,21 @@ export default function SuggestionList({ items, onSelectItem }: Props) {
     [open, items, selectedIndex]
   );
 
-  return (
-    <ol role="listbox" className={styles.suggestions}>
+  useGlobalKeyDown(
+    "Escape",
+    (ev) => {
+      if (!open) {
+        return;
+      }
+
+      ev.preventDefault();
+      onRequestClose?.();
+    },
+    [open, onRequestClose]
+  );
+
+  return open ? (
+    <ol className={styles.suggestions}>
       {items.map((user, index) => (
         <li
           key={user.username}
@@ -66,5 +91,5 @@ export default function SuggestionList({ items, onSelectItem }: Props) {
         </li>
       ))}
     </ol>
-  );
+  ) : null;
 }
