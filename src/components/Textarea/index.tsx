@@ -1,32 +1,28 @@
 import type { User } from "@/data/user";
 import useSearch from "@/hooks/useSearch";
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Suggestion from "../Suggestion";
-import searchFn from "../../api/search";
 import styles from "./styles.module.css";
 
-type Props = {};
+type Props = {
+  search: (term: string, signal: AbortSignal) => Promise<User[]>;
+};
 
-const Textarea: FC<{}> = () => {
+const Textarea: FC<Props> = ({ search }) => {
   const [value, setValue] = useState("");
-  const isSearchingRef = useRef(false);
   const { results, updateQuery } = useSearch<User>({
-    search: searchFn,
+    search,
   });
-
-  const suggestionListRef = useRef<HTMLOListElement>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = event.target;
     setValue(value);
 
-    const term = /@(\w+)$/.exec(value)?.[1] ?? "";
-    if (term || isSearchingRef.current) {
-      isSearchingRef.current = true;
-      const term = /@(\w+)$/.exec(value)?.[1] ?? "";
+    // this only looks for autocomplete opportunities at the end of the text
+    // ideally we'd look for terms where the cursor is.
+    const term = /\s@(\w+)$/.exec(value)?.[1];
+    if (term) {
       updateQuery(term);
-    } else if (value === " ") {
-      isSearchingRef.current = false;
     }
   };
 
@@ -37,7 +33,7 @@ const Textarea: FC<{}> = () => {
         onChange={handleChange}
         value={value}
       />
-      <ol ref={suggestionListRef} className={styles.suggestions}>
+      <ol className={styles.suggestions}>
         {results.map((user) => (
           <li key={user.username}>
             <Suggestion {...user} />
