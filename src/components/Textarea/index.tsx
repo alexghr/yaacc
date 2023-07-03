@@ -1,6 +1,9 @@
 import type { User } from "@/data/user";
 import useAutocomplete from "@/hooks/useAutocomplete";
 import { FC, useRef, useState } from "react";
+import Suggestion from "../Suggestion";
+import searchFn from "../../api/search";
+import styles from "./styles.module.css";
 
 type Props = {};
 
@@ -8,22 +11,17 @@ const Textarea: FC<{}> = () => {
   const [value, setValue] = useState("");
   const isSearchingRef = useRef(false);
   const { suggestions, search } = useAutocomplete<User>({
-    search: async (query, signal) => {
-      const url = new URL("/api/search", window.location.origin);
-      url.searchParams.set("q", query);
-      const res = await fetch(url.toString(), { signal });
-      if (res.status !== 200) {
-        throw new Error("Failed to fetch");
-      }
-      return res.json();
-    },
+    search: searchFn,
   });
+
+  const suggestionListRef = useRef<HTMLOListElement>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = event.target;
     setValue(value);
 
-    if (value === "@" || isSearchingRef.current) {
+    const term = /@(\w+)$/.exec(value)?.[1] ?? "";
+    if (term || isSearchingRef.current) {
       isSearchingRef.current = true;
       const term = /@(\w+)$/.exec(value)?.[1] ?? "";
       search(term);
@@ -33,11 +31,19 @@ const Textarea: FC<{}> = () => {
   };
 
   return (
-    <div>
-      <textarea onChange={handleChange} value={value} />
-      {suggestions.map((suggestion) => (
-        <div key={suggestion.username}>{suggestion.name}</div>
-      ))}
+    <div className={styles.wrapper}>
+      <textarea
+        className={styles.textArea}
+        onChange={handleChange}
+        value={value}
+      />
+      <ol ref={suggestionListRef} className={styles.suggestions}>
+        {suggestions.map((suggestion) => (
+          <li key={suggestion.username}>
+            <Suggestion {...suggestion} />
+          </li>
+        ))}
+      </ol>
     </div>
   );
 };

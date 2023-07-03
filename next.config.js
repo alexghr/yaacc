@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  images: {
+    domains: ["secure.gravatar.com"],
+  },
+};
 
 module.exports = nextConfig

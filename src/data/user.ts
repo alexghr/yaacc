@@ -1,7 +1,11 @@
 // importing data makes it easy to work with
 import data from "./data.json";
 
-export type User = (typeof data)[number];
+export type User = {
+  name: string;
+  username: string;
+  avatarUrl: string;
+};
 
 const ERROR_CHANCE = 0.1;
 const [DELAY_MIN, DELAY_MAX] = [50, 100];
@@ -14,9 +18,13 @@ export async function autocompleteUsers(
     return [];
   }
 
-  const users = data.filter((user) =>
-    user.username.toLowerCase().startsWith(cleanedPrefix)
-  );
+  const users: User[] = data
+    .filter((user) => user.username.toLowerCase().startsWith(cleanedPrefix))
+    .map(({ username, name, avatar_url }) => ({
+      username,
+      name,
+      avatarUrl: avatar_url,
+    }));
 
   // introduce a bit of variance to simulate remote data
   return new Promise((res, rej) => {
