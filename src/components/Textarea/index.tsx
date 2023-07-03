@@ -3,6 +3,7 @@ import useSearch from "@/hooks/useSearch";
 import { FC, useEffect, useState } from "react";
 import Suggestion from "../Suggestion";
 import styles from "./styles.module.css";
+import SuggestionList from "../SuggestionList";
 
 type Props = {
   search: (term: string, signal: AbortSignal) => Promise<User[]>;
@@ -33,13 +34,7 @@ const Textarea: FC<Props> = ({ search }) => {
         onChange={handleChange}
         value={value}
       />
-      <ol className={styles.suggestions}>
-        {results.map((user) => (
-          <li key={user.username}>
-            <Suggestion {...user} />
-          </li>
-        ))}
-      </ol>
+      <SuggestionList items={results} />
     </div>
   );
 };

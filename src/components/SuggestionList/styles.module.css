@@ -1,0 +1,12 @@
+.suggestions {
+  margin-top: 1rem;
+  list-style: none;
+}
+
+.suggestions > li + li {
+  margin-top: 1rem;
+}
+
+.suggestions > [aria-selected="true"] {
+  background-color: lightblue;
+}
