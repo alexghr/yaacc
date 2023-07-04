@@ -1,15 +1,16 @@
 import type { User } from "@/data/user";
 import useSearch from "@/hooks/useSearch";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, HTMLProps, useEffect, useRef, useState } from "react";
 import styles from "./styles.module.css";
 import SuggestionList from "../SuggestionList";
 import findAutocompleteTerm from "./term";
 
 type Props = {
   search: (term: string, signal: AbortSignal) => Promise<User[]>;
-};
+  inputId?: string;
+} & Omit<HTMLProps<HTMLDivElement>, "children">;
 
-const Textarea: FC<Props> = ({ search }) => {
+const Textarea: FC<Props> = ({ search, inputId, ...props }) => {
   const [value, setValue] = useState("");
   const { results, updateQuery } = useSearch<User>({
     search,
@@ -60,8 +61,9 @@ const Textarea: FC<Props> = ({ search }) => {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} {...props}>
       <textarea
+        id={inputId}
         className={styles.textArea}
         onChange={handleChange}
         value={value}

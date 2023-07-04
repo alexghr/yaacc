@@ -1,6 +1,22 @@
 .main {
-  max-width: 80rem;
+  max-width: 60rem;
   padding: 4rem;
   margin: auto;
   min-height: 100vh;
+}
+
+.label {
+  display: block;
+  margin-bottom: 2rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.small {
+  display: block;
+  margin-top: 1rem;
+}
+
+.mono {
+  font-family: monospace;
 }
