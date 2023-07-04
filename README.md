@@ -1,6 +1,6 @@
 # Yet Another Auto Complete Component
 
-This is a simple Next.js app exploring autocomplete inside `<textarea/>` elements.
+This is a simple Next.js app exploring autocomplete inside `<textarea/>` elements. This app is deployed to [yaacc.alexghr.me](https://yaacc.alexghr.me/).
 
 ## Run locally
 
