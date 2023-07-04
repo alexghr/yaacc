@@ -80,7 +80,7 @@ export default function SuggestionList({
   );
 
   return open ? (
-    <ol className={styles.suggestions}>
+    <ol role="listbox" className={styles.suggestions}>
       {items.map((user, index) => (
         <li
           key={user.username}
